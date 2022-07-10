@@ -1,17 +1,14 @@
-const express = require('express');
-const app = express();
 const fs = require("fs");
 const crypto = require('crypto');
+const axios = require('axios');
 
-app.use(express.json());
-app.get('/api/challenges', (req, res)=>{
-    
-    const data = req.query.data;
+axios.get('https://coderbyte.com/api/challenges/json/age-counting').then(res=>{
     try
     {            
+        const data = res.data?.data || null;
         if(!data)
         {
-            throw new Error("Invalida parameters");
+            throw new Error("Invalid parameters");
         }
         const ageToFilter = 32;
         const filename = "./output.txt";
@@ -19,15 +16,16 @@ app.get('/api/challenges', (req, res)=>{
         createFile(keys, filename);
         const hash  = getHashFile(filename);
         console.log(hash);
-        res.json(hash);
+        
     }
     catch(err){
-        res.json(err.message)
+        console.error(err);
     }
-   
-})
+});
 
-app.listen(3000,()=>{});
+
+
+
 
 function filterAge(data, age)
 {
